@@ -18,15 +18,23 @@ app.get("/", function (req, res) {
   res.sendFile(__dirname + "/views/index.html");
 });
 
-// your first API endpoint...
-app.get("/api/hello", function (req, res) {
-  res.json({ greeting: "hello API" });
+// solution
+
+app.get("/api", function (_, res) {
+  const date = new Date();
+  res.json({ unix: date.getTime(), utc: date.toUTCString() });
 });
 
 app.get("/api/:date", function (req, res) {
   const { date } = req.params;
-  const isNumber = Number(date);
-  const conversion = new Date(isNumber ? isNumber : date);
+  const isUnix = Number(date);
+  const conversion = new Date(isUnix ? isUnix : date);
+
+  if (conversion.toString() === "Invalid Date") {
+    res.json({ error: "Invalid Date" });
+    return;
+  }
+
   res.json({ unix: conversion.getTime(), utc: conversion.toUTCString() });
 });
 
